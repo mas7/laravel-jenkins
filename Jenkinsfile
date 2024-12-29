@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Pull code from your source control
-                git url: 'https://github.com/you/your-laravel-app.git', branch: 'main'
+                git url: 'https://github.com/mas7/laravel-jenkins.git', branch: 'main'
             }
         }
         stage('Composer Install') {
