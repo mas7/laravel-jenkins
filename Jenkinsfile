@@ -11,13 +11,13 @@ pipeline {
         stage('Composer Install') {
             steps {
                 // Run Composer inside the PHP-FPM container
-                sh 'docker-compose exec php-fpm composer install --no-interaction'
+                sh 'sudo docker-compose exec php-fpm composer install --no-interaction'
             }
         }
         stage('Test') {
             steps {
                 // Run your tests
-                sh 'docker-compose exec php-fpm php artisan test'
+                sh 'sudo docker-compose exec php-fpm php artisan test'
             }
         }
     }
