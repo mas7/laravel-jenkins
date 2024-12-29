@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  # Jenkins Service
+  jenkins:
+    build:
+      context: .
+      dockerfile: Dockerfile.jenkins
+    container_name: jenkins-laravel
+    ports:
+      - "8080:8080" # Jenkins on port 8080
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    # If you need Docker commands from Jenkins, keep it privileged or add extra steps
+    privileged: true
+
+  # PHP-FPM Service for Laravel
+  php-fpm:
+    build:
+      context: .
+      dockerfile: Dockerfile.phpfpm
+    container_name: laravel-php-fpm
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - mysql
+
+  # Nginx Service
+  nginx:
+    image: nginx:alpine
+    container_name: laravel-nginx
+    depends_on:
+      - php-fpm
+    volumes:
+      - ./:/var/www/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8000:80" # Laravel served on port 8000
+
+  # MySQL Service
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-laravel
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=laravel
+      - MYSQL_USER=laravel
+      - MYSQL_PASSWORD=secret
+    ports:
+      - "3306:3306"
+
+volumes:
+  jenkins_home:
